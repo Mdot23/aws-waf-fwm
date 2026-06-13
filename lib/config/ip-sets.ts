@@ -3,7 +3,7 @@ import * as path from 'path';
 
 /**
  * Configuration for IP allowlists
- * Centralized location for managing allowlists file paths and loading logic
+ * Centralized location for managing allowlist file paths and loading logic
  */
 
 export interface IpAllowlistConfig {
@@ -11,22 +11,26 @@ export interface IpAllowlistConfig {
   description: string;
 }
 
-export const IP_ALLOWLIST: { [key: string]: IpAllowlistConfig } = {
-  TOTAL_ALLOW: {
+export const IP_ALLOWLISTS: { [key: string]: IpAllowlistConfig } = {
+  TRUSTED_SOURCES: {
     filePath: path.resolve(__dirname, '../../scripts/allowlist.txt'),
-    description: 'IP addresses to completely allow'
+    description: 'IP addresses that are allowed to access resources'
   },
   // Future allowlists can be added here
-  // RATE_LIMIT: {
-  //   filePath: path.resolve(__dirname, '../../scripts/rate-limit.txt'),
-  //   description: 'IP addresses for rate limiting'
+  // ADMIN_SOURCES: {
+  //   filePath: path.resolve(__dirname, '../../scripts/admin-allowlist.txt'),
+  //   description: 'IP addresses for admin panel access'
+  // },
+  // PARTNER_SOURCES: {
+  //   filePath: path.resolve(__dirname, '../../scripts/partner-allowlist.txt'),
+  //   description: 'IP addresses for partner integrations'
   // }
 };
 
 /**
- * Load IP addresses from a allowlist file
+ * Load IP addresses from an allowlist file
  * @param allowlistKey - Key from IP_ALLOWLISTS config
- * @returns Array of IP addresses/CIDR allow
+ * @returns Array of IP addresses/CIDR blocks that are allowed
  */
 export function loadIpAllowlist(allowlistKey: string): string[] {
   const config = IP_ALLOWLISTS[allowlistKey];
@@ -42,7 +46,7 @@ export function loadIpAllowlist(allowlistKey: string): string[] {
       .map(line => line.trim())
       .filter(line => line && !line.startsWith('#'));
     
-    console.log(`Found ${ipAddresses.length} IP addresses from ${allowlistKey} allowlist`);
+    console.log(`Found ${ipAddresses.length} allowed IP addresses from ${allowlistKey} allowlist`);
   } catch (error) {
     console.error(`Error reading allowlist ${allowlistKey}: ${error}`);
     ipAddresses = [];
